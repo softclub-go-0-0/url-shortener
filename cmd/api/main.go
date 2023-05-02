@@ -41,5 +41,5 @@ func main() {
 		log.Fatal("DB connection error:", err)
 	}
 	log.Println("Successfully connected to DB")
-	
+
 }
