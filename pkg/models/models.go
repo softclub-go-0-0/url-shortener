@@ -14,8 +14,7 @@ type UrlShorter struct {
 	DeletedAt gorm.DeletedAt `json:"-" gorm:"index"`
 }
 
-func (base *UrlShorter) BeforeCraete(tx *gorm.DB) error {
-	uuid := uuid.New().String()
-	tx.Statement.SetColumn("ID", uuid)
-	return nil
+func (b *UrlShorter) BeforeCreate(tx *gorm.DB) (err error) {
+	b.ID = uuid.New()
+	return
 }

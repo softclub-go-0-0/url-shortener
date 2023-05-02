@@ -15,24 +15,21 @@ func (h *handler) CreateShortUrl(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
-	ch := link.LongUrl
-	link.LongUrl = ch
 	if err := h.DB.Where("long_url =?", link.LongUrl).First(&link).Error; err != nil {
 		link.ShortUrl = shortener.RandStr(8)
-		link.LongUrl = link.LongUrl
 		if h.DB.Create(&link).Error != nil {
 			log.Println("Inserting link data to DB:", err)
 			c.AbortWithStatusJSON(http.StatusInternalServerError, gin.H{
-				"message": "Intrenal Server Error",
+				"message": "Internal Server Error",
 			})
 			return
 		}
-		host := "http://localhost:9999"
-		c.JSON(http.StatusOK, gin.H{
-			"message":   "Short Url craeted successfully",
-			"short_url": host + link.ShortUrl,
-		})
 	}
+	host := "http://localhost:9999/"
+	c.JSON(http.StatusOK, gin.H{
+		"message":   "Short Url created successfully",
+		"short_url": host + link.ShortUrl,
+	})
 }
 
 func (h *handler) HandlerShortUrlRedirect(c *gin.Context) {
