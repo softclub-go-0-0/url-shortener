@@ -19,6 +19,7 @@ func (h *handler) CreateShortUrl(c *gin.Context) {
 	link.LongUrl = ch
 	if err := h.DB.Where("long_url =?", link.LongUrl).First(&link).Error; err != nil {
 		link.ShortUrl = shortener.RandStr(8)
+		link.LongUrl = link.LongUrl
 		if h.DB.Create(&link).Error != nil {
 			log.Println("Inserting link data to DB:", err)
 			c.AbortWithStatusJSON(http.StatusInternalServerError, gin.H{
