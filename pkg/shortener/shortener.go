@@ -2,7 +2,7 @@ package shortener
 
 import "math/rand"
 
-var charset = []byte("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ")
+var charset = []byte("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ123456789")
 
 func RandStr(n int) string {
 	b := make([]byte, n)

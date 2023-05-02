@@ -2,10 +2,13 @@ package main
 
 import (
 	"flag"
+	"github.com/gin-gonic/gin"
+	"github.com/softclub-go-0-0/url-shortener/pkg/handlers"
 	"github.com/softclub-go-0-0/url-shortener/pkg/models"
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
 	"log"
+	"net/http"
 )
 
 func DBInit(user, password, dbname, port string) (*gorm.DB, error) {
@@ -42,4 +45,16 @@ func main() {
 	}
 	log.Println("Successfully connected to DB")
 
+	h := handlers.NewHandler(db)
+
+	router := gin.Default()
+	router.GET("/", func(c *gin.Context) {
+		c.JSON(http.StatusOK, gin.H{
+			"message": "Welcome to the URL Shortener API",
+		})
+	})
+
+	router.POST("/create-short-url", func(c *gin.Context) {
+		h.CreateShortUrl(c)
+	})
 }
