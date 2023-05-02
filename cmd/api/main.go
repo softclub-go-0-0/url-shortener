@@ -2,6 +2,7 @@ package main
 
 import (
 	"flag"
+	"fmt"
 	"github.com/gin-gonic/gin"
 	"github.com/softclub-go-0-0/url-shortener/pkg/handlers"
 	"github.com/softclub-go-0-0/url-shortener/pkg/models"
@@ -57,4 +58,12 @@ func main() {
 	router.POST("/create-short-url", func(c *gin.Context) {
 		h.CreateShortUrl(c)
 	})
+
+	router.GET("/:shortUrl", func(c *gin.Context) {
+		h.HandlerShortUrlRedirect(c)
+	})
+	err = router.Run(":9999")
+	if err != nil {
+		panic(fmt.Sprintf("Failed to start the web server - Error: %v", err))
+	}
 }

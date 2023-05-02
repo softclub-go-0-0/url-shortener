@@ -33,3 +33,15 @@ func (h *handler) CreateShortUrl(c *gin.Context) {
 		})
 	}
 }
+
+func (h *handler) HandlerShortUrlRedirect(c *gin.Context) {
+	shortUrl := c.Param("shortUrl")
+	var link models.UrlShorter
+	if err := h.DB.Where("short_url =?", shortUrl).First(&link).Error; err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"message": "I can't find such links!",
+		})
+		return
+	}
+	c.Redirect(http.StatusMovedPermanently, link.LongUrl)
+}
