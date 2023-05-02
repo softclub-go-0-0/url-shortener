@@ -55,13 +55,10 @@ func main() {
 		})
 	})
 
-	router.POST("/create-short-url", func(c *gin.Context) {
-		h.CreateShortUrl(c)
-	})
+	router.POST("/create-short-url", h.CreateShortUrl)
+	router.GET("/:shortUrl", h.HandlerShortUrlRedirect)
+	router.DELETE("/deleteRedirect", h.DeleteRedirectURL)
 
-	router.GET("/:shortUrl", func(c *gin.Context) {
-		h.HandlerShortUrlRedirect(c)
-	})
 	err = router.Run(":9999")
 	if err != nil {
 		panic(fmt.Sprintf("Failed to start the web server - Error: %v", err))
