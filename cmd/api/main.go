@@ -62,6 +62,10 @@ func main() {
 	router.GET("/:shortUrl", func(c *gin.Context) {
 		h.HandlerShortUrlRedirect(c)
 	})
+	router.GET("/qrcode", func(c *gin.Context) {
+		h.CreateQrcode(c)
+	})
+
 	err = router.Run(":9999")
 	if err != nil {
 		panic(fmt.Sprintf("Failed to start the web server - Error: %v", err))
