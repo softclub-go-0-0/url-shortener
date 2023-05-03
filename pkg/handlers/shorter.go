@@ -46,7 +46,7 @@ func (h *handler) HandlerShortUrlRedirect(c *gin.Context) {
 
 func (h *handler) DeleteRedirectURL(c *gin.Context) {
 	var redirect models.UrlShorter
-	if err := h.DB.Where("short_url = ?", c.Param("short_url")).First(&redirect).Error; err != nil {
+	if err := h.DB.Where("short_url = ?", c.Param("shortUrl")).First(&redirect).Error; err != nil {
 		log.Println("client error - cannot find redirect:", err)
 		c.JSON(http.StatusBadRequest, gin.H{
 			"message": "I can't find such links!",
@@ -54,7 +54,7 @@ func (h *handler) DeleteRedirectURL(c *gin.Context) {
 		return
 	}
 
-	if err := h.DB.Delete(&redirect); err != nil {
+	if err := h.DB.Delete(&redirect).Error; err != nil {
 		log.Println("failed to remove server issues", err)
 		c.JSON(http.StatusInternalServerError, gin.H{
 			"message": "Internal server error",
