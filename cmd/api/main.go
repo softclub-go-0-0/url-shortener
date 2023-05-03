@@ -57,6 +57,7 @@ func main() {
 
 	router.POST("/create-short-url", h.CreateShortUrl)
 	router.GET("/:shortUrl", h.HandlerShortUrlRedirect)
+	router.GET("/qrcode", h.CreateQrcode)
 	router.DELETE("/:shortUrl", h.DeleteRedirectURL)
 
 	err = router.Run(":9999")
