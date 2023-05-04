@@ -38,6 +38,7 @@ func main() {
 	DBUser := flag.String("dbuser", "postgres", "Enter the name of a DB user")
 	DBPassword := flag.String("dbpassword", "developer", "Enter the password of user")
 	DBPort := flag.String("dbport", "5432", "Enter the port of DB")
+	port := flag.String("port", "4000", "Enter the port of router")
 	flag.Parse()
 
 	db, err := DBInit(*DBUser, *DBPassword, *DBName, *DBPort)
@@ -60,7 +61,7 @@ func main() {
 	router.GET("/qrcode", h.CreateQrcode)
 	router.DELETE("/:shortUrl", h.DeleteRedirectURL)
 
-	err = router.Run(":9999")
+	err = router.Run(":" + *port)
 	if err != nil {
 		panic(fmt.Sprintf("Failed to start the web server - Error: %v", err))
 	}
