@@ -52,7 +52,7 @@ func main() {
 
 	router.POST("/links", h.CreateLink)
 	router.GET("/:shortUrl", h.Redirect)
-	router.POST("/qrcode", h.CreateQrcode)
+	router.POST("/qrcode", h.CreateQRCode)
 	router.DELETE("/:shortUrl", h.DeleteLink)
 
 	err = router.Run(":9999")
