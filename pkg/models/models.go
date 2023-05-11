@@ -6,15 +6,10 @@ import (
 	"time"
 )
 
-type UrlShorter struct {
-	ID        uuid.UUID      `gorm:"primary_key" json:"id"`
-	LongUrl   string         `json:"long_url" binding:"required,url"`
-	ShortUrl  string         `json:"short_url"`
+type Link struct {
+	ID        uuid.UUID      `json:"id" gorm:"primaryKey;type:uuid;default:gen_random_uuid()"`
+	LongURL   string         `json:"long_url" binding:"required,url"`
+	ShortURL  string         `json:"short_url"`
 	CreatedAt time.Time      `json:"created_at"`
 	DeletedAt gorm.DeletedAt `json:"-" gorm:"index"`
-}
-
-func (b *UrlShorter) BeforeCreate(tx *gorm.DB) (err error) {
-	b.ID = uuid.New()
-	return
 }

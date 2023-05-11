@@ -1,4 +1,4 @@
-package shortener
+package helpers
 
 import "math/rand"
 

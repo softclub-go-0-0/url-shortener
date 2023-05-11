@@ -5,7 +5,7 @@ import (
 	"net/http"
 )
 
-func IntervalServerError(c *gin.Context) {
+func InternalServerError(c *gin.Context) {
 	c.AbortWithStatusJSON(http.StatusInternalServerError, gin.H{
 		"message": "Interval server error",
 	})

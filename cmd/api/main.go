@@ -9,7 +9,6 @@ import (
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
 	"log"
-	"net/http"
 )
 
 func DBInit(user, password, dbname, port string) (*gorm.DB, error) {
@@ -25,7 +24,7 @@ func DBInit(user, password, dbname, port string) (*gorm.DB, error) {
 		return nil, err
 	}
 	err = db.AutoMigrate(
-		&models.UrlShorter{},
+		&models.Link{},
 	)
 	if err != nil {
 		return nil, err
@@ -49,16 +48,12 @@ func main() {
 	h := handlers.NewHandler(db)
 
 	router := gin.Default()
-	router.GET("/", func(c *gin.Context) {
-		c.JSON(http.StatusOK, gin.H{
-			"message": "Welcome to the URL Shortener API",
-		})
-	})
+	router.GET("/", h.Welcome)
 
-	router.POST("/create-short-url", h.CreateShortUrl)
-	router.GET("/:shortUrl", h.HandlerShortUrlRedirect)
-	router.GET("/qrcode", h.CreateQrcode)
-	router.DELETE("/:shortUrl", h.DeleteRedirectURL)
+	router.POST("/links", h.CreateLink)
+	router.GET("/:shortUrl", h.Redirect)
+	router.POST("/qrcode", h.CreateQrcode)
+	router.DELETE("/:shortUrl", h.DeleteLink)
 
 	err = router.Run(":9999")
 	if err != nil {
