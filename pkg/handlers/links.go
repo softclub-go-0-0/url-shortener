@@ -6,6 +6,7 @@ import (
 	"github.com/softclub-go-0-0/url-shortener/pkg/models"
 	"log"
 	"net/http"
+	"os"
 )
 
 type LinkData struct {
@@ -30,10 +31,9 @@ func (h *handler) CreateLink(c *gin.Context) {
 		return
 	}
 
-	host := "http://localhost:9999/"
 	c.JSON(http.StatusOK, gin.H{
 		"message":   "Short Url created successfully",
-		"short_url": host + link.ShortURL,
+		"short_url": os.Getenv("APP_URL") + link.ShortURL,
 	})
 }
 
