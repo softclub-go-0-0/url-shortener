@@ -6,27 +6,34 @@ import (
 	"github.com/softclub-go-0-0/url-shortener/pkg/models"
 	"log"
 	"net/http"
+	"os"
 )
 
+type LinkData struct {
+	LongURL string `json:"long_url" binding:"required,url"`
+}
+
 func (h *handler) CreateLink(c *gin.Context) {
-	var link models.Link
-	err := c.ShouldBindJSON(&link)
+	var linkData LinkData
+	err := c.ShouldBindJSON(&linkData)
 	if err != nil {
 		helpers.StatusBadRequest(c, err)
 		return
 	}
-	if err := h.DB.Where("long_url =?", link.LongURL).First(&link).Error; err != nil {
-		link.ShortURL = helpers.RandStr(8)
-		if h.DB.Create(&link).Error != nil {
-			log.Println("Inserting link data to DB:", err)
-			helpers.InternalServerError(c)
-			return
-		}
+
+	var link models.Link
+	link.LongURL = linkData.LongURL
+	link.ShortURL = helpers.RandStr(8)
+
+	if h.DB.Create(&link).Error != nil {
+		log.Println("Inserting link data to DB:", err)
+		helpers.InternalServerError(c)
+		return
 	}
-	host := "http://localhost:9999/"
+
 	c.JSON(http.StatusOK, gin.H{
 		"message":   "Short Url created successfully",
-		"short_url": host + link.ShortURL,
+		"short_url": os.Getenv("APP_URL") + link.ShortURL,
 	})
 }
 

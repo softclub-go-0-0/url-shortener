@@ -1,49 +1,28 @@
 package main
 
 import (
-	"flag"
 	"fmt"
 	"github.com/gin-gonic/gin"
+	"github.com/joho/godotenv"
+	"github.com/softclub-go-0-0/url-shortener/pkg/database"
 	"github.com/softclub-go-0-0/url-shortener/pkg/handlers"
-	"github.com/softclub-go-0-0/url-shortener/pkg/models"
-	"gorm.io/driver/postgres"
-	"gorm.io/gorm"
 	"log"
+	"os"
 )
 
-func DBInit(user, password, dbname, port string) (*gorm.DB, error) {
-	dsn := "host=localhost" +
-		" user=" + user +
-		" password=" + password +
-		" dbname=" + dbname +
-		" port=" + port +
-		" sslmode=disable" +
-		" TimeZone=Asia/Dushanbe"
-	db, err := gorm.Open(postgres.Open(dsn), &gorm.Config{})
-	if err != nil {
-		return nil, err
-	}
-	err = db.AutoMigrate(
-		&models.Link{},
-	)
-	if err != nil {
-		return nil, err
-	}
-	return db, nil
-}
-
 func main() {
-	DBName := flag.String("dbname", "linkshorter", "Enter the name of DB")
-	DBUser := flag.String("dbuser", "postgres", "Enter the name of a DB user")
-	DBPassword := flag.String("dbpassword", "developer", "Enter the password of user")
-	DBPort := flag.String("dbport", "5432", "Enter the port of DB")
-	port := flag.String("port", "4000", "Enter the port of router")
-	flag.Parse()
-
-	db, err := DBInit(*DBUser, *DBPassword, *DBName, *DBPort)
+	err := godotenv.Load()
 	if err != nil {
-		log.Fatal("DB connection error:", err)
+		log.Fatal("Error loading .env file")
 	}
+
+	db, err := database.DBInit(
+		os.Getenv("DB_USER"),
+		os.Getenv("DB_PASSWORD"),
+		os.Getenv("DB_NAME"),
+		os.Getenv("DB_PORT"),
+	)
+
 	log.Println("Successfully connected to DB")
 
 	h := handlers.NewHandler(db)
@@ -56,7 +35,7 @@ func main() {
 	router.POST("/qrcode", h.CreateQRCode)
 	router.DELETE("/:shortUrl", h.DeleteLink)
 
-	err = router.Run(":" + *port)
+	err = router.Run(":" + os.Getenv("APP_PORT"))
 	if err != nil {
 		panic(fmt.Sprintf("Failed to start the web server - Error: %v", err))
 	}
