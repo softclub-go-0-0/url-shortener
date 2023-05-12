@@ -30,11 +30,12 @@ func main() {
 
 	router := gin.Default()
 
-	router.Use(middlwares.AuthMiddleware())
-
 	router.GET("/", h.Welcome)
-	router.POST("/links", h.CreateLink)
 	router.GET("/:shortUrl", h.Redirect)
+
+	router.Use(middlewares.AuthMiddleware())
+
+	router.POST("/links", h.CreateLink)
 	router.POST("/qrcode", h.CreateQRCode)
 	router.DELETE("/:shortUrl", h.DeleteLink)
 
