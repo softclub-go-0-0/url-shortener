@@ -6,6 +6,7 @@ import (
 	"github.com/joho/godotenv"
 	"github.com/softclub-go-0-0/url-shortener/pkg/database"
 	"github.com/softclub-go-0-0/url-shortener/pkg/handlers"
+	"github.com/softclub-go-0-0/url-shortener/pkg/middlwares"
 	"log"
 	"os"
 )
@@ -28,10 +29,13 @@ func main() {
 	h := handlers.NewHandler(db)
 
 	router := gin.Default()
+
 	router.GET("/", h.Welcome)
+	router.GET("/:shortUrl", h.Redirect)
+
+	router.Use(middlewares.AuthMiddleware())
 
 	router.POST("/links", h.CreateLink)
-	router.GET("/:shortUrl", h.Redirect)
 	router.POST("/qrcode", h.CreateQRCode)
 	router.DELETE("/:shortUrl", h.DeleteLink)
 
